@@ -1,11 +1,14 @@
 package it.unibo.oop.lab.lambda.ex01;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -58,10 +61,9 @@ public final class LambdaUtilities {
      *         otherwise.
      */
     public static <T> List<Optional<T>> optFilter(final List<T> list, final Predicate<T> pre) {
-        /*
-         * Suggestion: consider Optional.filter
-         */
-        return null;
+        final List<Optional<T>> l = new ArrayList<>(); 
+        list.forEach(elem -> l.add((Optional.of(elem)).filter(pre)));
+        return l;
     }
 
     /**
@@ -77,10 +79,18 @@ public final class LambdaUtilities {
      *         based on the mapping done by the function
      */
     public static <R, T> Map<R, Set<T>> group(final List<T> list, final Function<T, R> op) {
+        final Map<R, Set<T>> map = new HashMap<>();
+    	//Set<T> s = new HashSet<>();
+    	list.forEach(elem -> {
+    		map.merge(op.apply(elem), new HashSet<T>(Arrays.asList(elem))/*Set.of(elem)*/, (set1, set2) -> {
+    			set1.addAll(set2);
+    			return set1;
+    			});
+    	});
         /*
          * Suggestion: consider Map.merge
          */
-        return null;
+        return map;
     }
 
     /**
@@ -96,12 +106,14 @@ public final class LambdaUtilities {
      *         by the supplier
      */
     public static <K, V> Map<K, V> fill(final Map<K, Optional<V>> map, final Supplier<V> def) {
+    	 final Map<K, V> m = new HashMap<>();
+    	 map.forEach((k, v) -> m.put(k, v.orElseGet(def))); //(v.isEmpty() ? def : v.get())));
         /*
          * Suggestion: consider Optional.orElse
          * 
          * Keep in mind that a map can be iterated through its forEach method
          */
-        return null;
+        return m;
     }
 
     /**
